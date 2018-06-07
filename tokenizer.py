@@ -60,7 +60,7 @@ class FileHandler:
 if __name__ == '__main__':
     fileHandler = FileHandler('./citeseer','stopwords.txt')
     fileHandler.iterateThroughFiles()
-    print('The following lines answer the questions to point 2.')
+    print('The following lines answer the questions to point 2 or 3.')
     print('a. There is a total of {} words in the collection.'.format(fileHandler.numberOfWords))
     print('b. The vocabulary size or number of unique terms is given by the size of the hash table: {}'.format(len(fileHandler.vocabulary)))
     print('c. The top 20 words by frequency are:')
