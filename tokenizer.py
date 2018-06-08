@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 This script tokenizes the input data and answers the excercise's questions
 This exercise solution is presented by Rogelio Garcia.
