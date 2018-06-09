@@ -45,6 +45,7 @@ The number of unique terms or vocabulary size is 19215.
 
 #### e. What is the minimum number of unique words accounting for 15% of the total number of words in the collection?
 One would only need to add the frequencies of the first **4 words** to have over 15% of the total number of words.
+
 |    Word     | Appearances |
 | ----------: | :---------- |
 |         the | 25661       |
