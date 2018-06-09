@@ -28,6 +28,8 @@ class FolderTokenizer:
         Initializes the class with parameters
             pathToFiles - string containing the route to the folder that contains the files to tokenize
             pathToStopWords - if there is a stopwords catalogue to be used, it will eliminate stop words from the tokenized output
+            eliminateStopWords - Boolean, if True removes stopwords, if False, ignores stopwords and adds them to the vocabulary.
+            stemmer - The stemmer to be used. It has to have a "stem" method that accepts a word (String) and outputs a string.
         The stop words are stored in a list called stopWords, and it expects the stop words catalogue in the format:
             word1
             word2
@@ -36,6 +38,15 @@ class FolderTokenizer:
             .
             wordn
         with each word on a single line.
+
+        This function initializes the following class variables:
+            pathToFiles: same as parameter.
+            vocabulary: dictionary (hash table) containing the vocabulary in inverted index notation.
+            numberOfWords: keeps track of the total number of words in the collection.
+            wordCount: dictionary containing the vocabulary as a total sum of frequencies in the collection.
+            stopWords: catalogue of stopwords. May be None.
+            stemmer: same as parameter.
+            eliminateStopWords: same as parameter.
         """
         self.pathToFiles = pathToFiles
         self.vocabulary = {}
@@ -66,8 +77,7 @@ class FolderTokenizer:
         """
         lines = [line.rstrip('\n') for line in currentFile]
         for line in lines:
-            line = re.sub(r'[!@#%$^&*\(\)+0\\123456789:=\'.—/,\[\]\-\-_|\"?<>~]','',line)
-            line = re.sub("'",'',line)
+            line = re.sub(r'[!@#%$^&*\{\}\(\)+0\\123456789:=\'.\-\-\—/,\[\]_|\"?<>~;:]','',line)
             afterSplit = line.strip().split(' ')
             for tokenCandidate in afterSplit:
                 if tokenCandidate == ' ' or tokenCandidate == '':
@@ -112,6 +122,10 @@ class FolderTokenizer:
                 return False
 
     def sparseVector(self):
+        """
+        Returns the vector in the sparse TF-IDF notation.
+        Returns a dictionary of dictionaries.
+        """
         words = list(self.vocabulary.keys())
         sparseVector = {}
         currentWord = 0
@@ -124,6 +138,13 @@ class FolderTokenizer:
                 else:
                     sparseVector[file][currentWord] = self.vocabulary[word][file]
         return sparseVector
+
+    def listOfWords(self):
+        """
+        Returns a list of the words in the vocabulary.
+        The index for each word matches the index used in the sparse vector.
+        """
+        return list(self.vocabulary.keys())
 
 if __name__ == '__main__':
     print('1. The class FolderTokenizer will tokenize the entire ./citeseer folder on whitespaces and removing punctuation, numbers and special characters.')
@@ -177,5 +198,7 @@ if __name__ == '__main__':
     print('As the number of documents is probably quite large, only a couple examples will be printed.')
     sparseVector = folderTokenizerWithStemmer.sparseVector()
     sparseVectorKeys = list(sparseVector.keys())
+    print('Showing sparse vector of file {}.'.format(sparseVectorKeys[0]))
     print(sparseVector[sparseVectorKeys[0]])
+    print('Showing sparse vector of file {}.'.format(sparseVectorKeys[1]))
     print(sparseVector[sparseVectorKeys[1]])
