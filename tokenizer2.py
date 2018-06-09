@@ -112,6 +112,10 @@ class FolderTokenizer:
                 return False
 
     def sparseVector(self):
+        """
+        Returns the vocabulary in the sparse TF-IDF representation.
+        Returns a dictionary of dictionaries.
+        """
         words = list(self.vocabulary.keys())
         sparseVector = {}
         currentWord = 0
@@ -124,6 +128,13 @@ class FolderTokenizer:
                 else:
                     sparseVector[file][currentWord] = self.vocabulary[word][file]
         return sparseVector
+
+    def listOfWords(self):
+        """
+        Returns the list of words.
+        Each word has an index and corresponds to the index used in the sparse vector.
+        """
+        return list(self.vocabulary.keys())
 
 if __name__ == '__main__':
     print('1. The class FolderTokenizer will tokenize the entire ./citeseer folder on whitespaces and removing punctuation, numbers and special characters.')
