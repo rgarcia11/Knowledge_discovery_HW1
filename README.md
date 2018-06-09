@@ -1,7 +1,7 @@
 # Knowledge_discovery_HW1
 First homework of the Knowledge Discovery from Social and Information Networks summer class in Universidad de los Andes.
 This work is presented by **Rogelio Garcia**. It is available at the course's *virtual machine* and at *Sicuaplus*.
-It was solved in Python3.3 using two libraries, NLTK and heapq.
+It was solved in Python3.3 using four librarie: so, re, NLTK and heapq.
 ## Questions
 ### 1. Write a program that preprocesses the collection. In doing so, tokenize on whitespace and remove punctuation.
 The solution described in the next section tokenizes on whitespaces, removes punctuation, numbers and special characters.
