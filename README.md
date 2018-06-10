@@ -193,6 +193,11 @@ To run, step into the project folder and simply use the command:
 
 *Note that depending on how you installed python, it might be only python tokenizer.py.*
 
+In the virtual machine, the script will be found on:
+> /home/estudiante/Documents/Knowledge_discovery_HW1
+And it can be reached with the following command:
+> cd /home/estudiante/Documents/Knowledge_discovery_HW1
+
 ## Limitations
 Limitations include some word separations. In the case of a misread, eliminating special characters may end up in joining words. For example:
 <pre>
