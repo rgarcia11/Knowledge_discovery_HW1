@@ -59,7 +59,7 @@ One would only need to add the frequencies of the first **4 words** to have over
 The stopword catalogue was imported from https://www.dropbox.com/s/5789sj8v07j2id0/stopwords.txt.
 The Porter stemmer was imported from the NLTK Python library. The details on how it was implemented are on the next section "Solution".
 #### a. What is the total number of words in the collection?
-The total number of words in the collection is, again, 472077, it should not variate.
+The total number of **words** in the collection is, again, 472077, it should not variate, as the question refers to *words* and not *tokens*.
 #### b. What is the vocabulary size? (i.e., number of unique terms).
 The number of unique terms or vocabulary size is 12886.
 #### c. What are the top 20 words in the ranking? (i.e., the words with the highest frequencies).
@@ -122,7 +122,8 @@ The libraries used are:
 |    nltk | Natural language processing tool kit used to import a Porter stemmer. |
 
 ### Class FolderTokenizer
-Again, it is fully documented, so I'll explain the functionality.
+Again, it is fully documented, so I'll explain the functionality. The general idea is for it to work as a blackbox, receives certain parameters and builds the inverted index and the TF-IDF representation, but as it can load a catalogue of stopwords, it also checks if a certain word is a stopword.
+
 The constructor has the following parameters:
 
 > def \_\_init\_\_(self, pathToFiles, pathToStopWords=None, eliminateStopWords=False, stemmer=None):
@@ -138,6 +139,51 @@ For the second part, however, it was instantiated like this:
 > folderTokenizerWithStemmer = FolderTokenizer('./citeseer','stopwords.txt', True, PorterStemmer())
 
 Explicitly telling the class to eliminate stopwords and to use a stemmer. Note that this PorterStemmer() comes from the import *from nltk.stem import PorterStemmer*.
+
+The tokenizer, whether or not it takes stopwords or which signs it eliminates, builds the vocabulary in the following notation:
+
+| Term\Document | D_1 | D_2 | D_n |
+| ------------: | --- | --- | --- |
+|           T_1 | w11 | w12 | w1n |
+|           T_2 | w21 | w22 | w2n |
+|           T_t | wt1 | wt2 | wtn |
+
+It was implemented with a dictionary of *t* Python dictionaries. These examples are taken from the _citeseer_ example, after tokenization.
+
+<pre>
+'word': {'document1': frequency_of_word_in_document1, 'document2': frequency_of_word_in_document2}
+
+'cultures': {'filho98gathering': 1, 'flake02selforganization': 1, 'okamoto02supporting': 1}, 'collaboratories': {'filho98gathering': 1}, 'entertainments': {'filho98gathering': 1, 'sloman01varieties': 1, 'sloman99building': 1}
+
+'transduction': {'wu00adaptive': 1, 'wu00selfsupervised': 1}
+</pre>
+
+Appart from the vocabulary, the script also sums up the total word count of the collection and builds another dictionary in the format:
+<pre>
+'word':total_number_of_appearances
+</pre>
+This is done to answer the questions easily.
+
+To build the sparse vector in the TF-IDF notation, again, dictionaries were used. The notation is as follows:
+
+| Document\word_weight | w_1 | w_2 | w_k |
+| -------------------: | --- | --- | --- |
+|                  D_1 | w11 | w12 | w1n |
+|                  D_2 | w21 | w22 | w2n |
+|                  D_n | wt1 | wt2 | wtn |
+
+And it was implemented like this (100157 and 108573):
+
+<pre>
+'document1':{index1:number_of_appearances_of_word_1_in_document_1, index2:number_of_appearances_of_word_2_in_document_1},
+'document2':{index1:number_of_appearances_of_word_1_in_document_2, index2:number_of_appearances_of_word_2_in_document_2}
+
+100157:{1: 6, 2: 6, 3: 7, 4: 7, 5: 2, 6: 2, 7: 1, 8: 1, 9: 1, 10: 4, 11: 1, 12: 1, 13: 1, 14: 1, 15: 5, 16: 1, 17: 1, 18: 2, 19: 4, 20: 1, 21: 1, 22: 2, 23: 1, 24: 1, 25: 1, 26: 2, 27: 1, 28: 1, 29: 1, 30: 1, 31: 2, 32: 1, 33: 1, 34: 1, 35: 1, 36: 1, 37: 1, 38: 1, 39: 1, 40: 1, 41: 1, 42: 1, 43: 1, 44: 1},
+108573:{1: 1, 13: 1, 24: 1, 27: 1, 35: 2, 39: 2, 43: 1, 74: 3, 110: 1, 126: 1, 132: 3, 160: 2, 169: 1, 171: 1, 239: 1, 285: 1, 286: 7, 287: 2, 484: 1, 490: 1, 514: 1, 521: 1, 523: 1, 536: 6, 537: 4, 538: 4, 539: 2, 540: 1, 541: 1, 542: 1, 543: 1, 544: 3, 545: 1, 546: 1, 547: 1, 548: 1, 549: 1, 550: 1, 551: 1, 552: 1, 553: 2, 554: 1, 555: 1, 556: 1, 557: 1, 558: 1, 559: 2, 560: 1, 561: 1, 562: 1, 563: 1, 564: 1, 565: 1, 566: 1, 567: 1, 568: 1, 569: 1}
+</pre>
+
+If it would be necessary to know which index corresponds to which word, a function *listOfWords* returns this information.
+
 
 ## How to run
 In order to run this script, you will need Python3 and the libraries nltk, re and heapq. The virtual machine already contains them.
@@ -158,3 +204,5 @@ When removing the characters *?* and newline character *\n*, the word *Title* an
 With joint terms like, for example, "machine-learning", it would result in a token being machinelearning.
 
 With situations like "Adapt/create", the read token would be adaptcreate.
+
+It will be necessary to receive a file, tokenize it and build the sparse TF-IDF notation to test or classify using a model like Naïve Bayes, a possible idea would be to build another FolderTokenizer with the file (or folder of files), but the problem would be to handle the same indexes in the TF-IDF notation. An extension for this program will probably be needed.
