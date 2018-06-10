@@ -121,23 +121,23 @@ class FolderTokenizer:
             else:
                 return False
 
-    def sparseVector(self):
+    def sparseVectors(self):
         """
         Returns the vector in the sparse TF-IDF notation.
         Returns a dictionary of dictionaries.
         """
         words = list(self.vocabulary.keys())
-        sparseVector = {}
+        sparseVectors = {}
         currentWord = 0
         for word in words:
             currentWord += 1
             files = self.vocabulary[word]
             for file in files:
-                if file not in sparseVector:
-                    sparseVector[file] = {currentWord:self.vocabulary[word][file]}
+                if file not in sparseVectors:
+                    sparseVectors[file] = {currentWord:self.vocabulary[word][file]}
                 else:
-                    sparseVector[file][currentWord] = self.vocabulary[word][file]
-        return sparseVector
+                    sparseVectors[file][currentWord] = self.vocabulary[word][file]
+        return sparseVectors
 
     def listOfWords(self):
         """
@@ -145,6 +145,7 @@ class FolderTokenizer:
         The index for each word matches the index used in the sparse vector.
         """
         return list(self.vocabulary.keys())
+        
 
 if __name__ == '__main__':
     print('1. The class FolderTokenizer will tokenize the entire ./citeseer folder on whitespaces and removing punctuation, numbers and special characters.')
@@ -196,9 +197,9 @@ if __name__ == '__main__':
     print('e. The minimum number of unique words accounting for 15% of the total number of words is {}'.format(fifteenPercent))
     print('4. For this exercise we consider the dictionary (hash table) as a table, and calculate the transpose.')
     print('As the number of documents is probably quite large, only a couple examples will be printed.')
-    sparseVector = folderTokenizerWithStemmer.sparseVector()
-    sparseVectorKeys = list(sparseVector.keys())
-    print('Showing sparse vector of file {}.'.format(sparseVectorKeys[0]))
-    print(sparseVector[sparseVectorKeys[0]])
-    print('Showing sparse vector of file {}.'.format(sparseVectorKeys[1]))
-    print(sparseVector[sparseVectorKeys[1]])
+    sparseVectors = folderTokenizerWithStemmer.sparseVectors()
+    sparseVectorsKeys = list(sparseVectors.keys())
+    print('Showing sparse vector of file {}.'.format(sparseVectorsKeys[0]))
+    print(sparseVectors[sparseVectorsKeys[0]])
+    print('Showing sparse vector of file {}.'.format(sparseVectorsKeys[1]))
+    print(sparseVectors[sparseVectorsKeys[1]])
